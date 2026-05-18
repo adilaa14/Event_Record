@@ -1,66 +1,70 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Dokumentasi Struktur RealTime Document Editor
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Aplikasi ini dibangun menggunakan stack **Laravel 11**, **Inertia.js**, **Vue.js**, dan **Laravel Reverb** untuk fitur kolaborasi real-time.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 📂 1. Arsitektur Frontend (Tampilan)
+Lokasi utama: `resources/js/`
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 🖥️ Halaman Utama (Pages)
+| File | Fungsi |
+| :--- | :--- |
+| `resources/js/Pages/Dashboard.vue` | Menampilkan daftar dokumen yang dimiliki pengguna dan tombol untuk membuat dokumen baru. |
+| `resources/js/Pages/Editor.vue` | **Inti Aplikasi.** Tempat pengguna mengetik, berkolaborasi secara real-time, melihat kursor teman, dan mencetak dokumen. |
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 🏗️ Tata Letak (Layouts)
+| File | Fungsi |
+| :--- | :--- |
+| `resources/js/Layouts/BootstrapLayout.vue` | Template dasar yang berisi Navbar dan background pink. Semua halaman utama dibungkus oleh file ini. |
+| `resources/js/Layouts/GuestLayout.vue` | Digunakan untuk halaman Login dan Register (tampilan minimalis). |
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## ⚙️ 2. Arsitektur Backend (Logika)
+Lokasi utama: `app/` dan `routes/`
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### 🎮 Controller (Pengatur Alur)
+| File | Fungsi |
+| :--- | :--- |
+| `app/Http/Controllers/NoteController.php` | Menangani logika pembuatan dokumen, penyimpanan teks ke database, dan mengundang kolaborator. |
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 🗃️ Models & Database
+| File | Fungsi |
+| :--- | :--- |
+| `app/Models/EventNote.php` | Mewakili tabel dokumen di database. Menyimpan judul, konten, dan ukuran kertas. |
+| `database/migrations/` | Berisi skema tabel database (tabel users, notes, collaborators, dll). |
 
-## Laravel Sponsors
+### 🛣️ Routing (Jalur Web)
+| File | Fungsi |
+| :--- | :--- |
+| `routes/web.php` | Mendefinisikan alamat URL web (contoh: `/dashboard`, `/notes/{id}`). |
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+---
 
-### Premium Partners
+## 📡 3. Sistem Real-Time (Kolaborasi)
+Fitur "Ajaib" yang membuat pengetikan sinkron antar pengguna.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+| Bagian | Fungsi |
+| :--- | :--- |
+| **Laravel Reverb** | Server WebSocket yang mengirimkan sinyal pengetikan secara instan tanpa delay. |
+| **Broadcasting Events** | Mengirimkan data kursor dan teks dari satu browser ke browser lainnya saat terjadi perubahan. |
+| **Inertia Whisper** | Fitur yang digunakan di `Editor.vue` untuk mengirim posisi mouse/kursor secara sangat cepat ke pengguna lain. |
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## 📄 4. Fitur Khusus: Mesin Cetak (Printing)
+Lokasi: Bagian `<style>` di dalam `Editor.vue`.
+*   Menggunakan `@media print` untuk menghilangkan semua elemen UI (Navbar, tombol) saat dokumen dicetak.
+*   Mengatur margin standar dokumen agar hasil print rapi seperti Microsoft Word.
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## 🚀 Cara Menjalankan Pengembangan
+Jika Anda ingin mengerjakan proyek ini lagi di lain waktu, jalankan 3 perintah ini di terminal terpisah:
+1. `php artisan serve` (Server Backend)
+2. `php artisan reverb:start` (Server Real-time)
+3. `npm run dev` (Server Frontend/Tampilan)
 
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+*Dokumen ini dibuat secara otomatis untuk membantu pemahaman struktur kode aplikasi.*

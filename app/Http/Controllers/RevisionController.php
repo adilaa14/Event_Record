@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Revision;
 use App\Models\EventNote;
+use App\Events\DocumentUpdated;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -28,6 +29,13 @@ class RevisionController extends Controller
             'content' => $revision->content_after
         ]);
 
-        return back();
+        // Broadcast the restoration to others
+        try {
+            broadcast(new DocumentUpdated($note->id, $revision->content_after, Auth::id()))->toOthers();
+        } catch (\Exception $e) {
+            \Log::error("Broadcasting restoration failed: " . $e->getMessage());
+        }
+
+        return response()->json(['status' => 'success']);
     }
 }

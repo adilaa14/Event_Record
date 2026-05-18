@@ -6,9 +6,12 @@ use Illuminate\Http\Request;
 
 use App\Models\EventNote;
 use App\Models\Collaborator;
+use App\Models\ActivityLog;
+use App\Models\Revision;
 use App\Events\DocumentUpdated;
 use App\Events\CursorMoved;
 use App\Events\MouseMoved;
+use App\Events\ActivityLogged;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 
@@ -53,6 +56,19 @@ class NoteController extends Controller
             'role' => 'owner',
         ]);
 
+        // Log Activity
+        $activity = ActivityLog::create([
+            'event_note_id' => $note->id,
+            'user_id' => Auth::id(),
+            'action' => 'membuat dokumen ini',
+        ]);
+
+        try {
+            broadcast(new ActivityLogged($note->id, $activity->load('user')))->toOthers();
+        } catch (\Exception $e) {
+            \Log::error("Broadcasting failed: " . $e->getMessage());
+        }
+
         return redirect()->route('notes.show', $note->id);
     }
 
@@ -74,8 +90,46 @@ class NoteController extends Controller
             'content' => $request->content
         ]);
 
-        // Broadcast to others
-        broadcast(new DocumentUpdated($note->id, $request->content, Auth::id()))->toOthers();
+        // 1. Log Activity (Debounced: only once every 5 minutes per user per action)
+        $lastLog = ActivityLog::where('event_note_id', $note->id)
+            ->where('user_id', Auth::id())
+            ->where('action', 'updated the content')
+            ->where('created_at', '>', now()->subMinutes(5))
+            ->first();
+
+        if (!$lastLog) {
+            $activity = ActivityLog::create([
+                'event_note_id' => $note->id,
+                'user_id' => Auth::id(),
+                'action' => 'memperbarui isi dokumen',
+            ]);
+            try {
+                broadcast(new ActivityLogged($note->id, $activity->load('user')))->toOthers();
+            } catch (\Exception $e) {
+                \Log::error("Broadcasting failed: " . $e->getMessage());
+            }
+        }
+
+        // 2. Create Revision (Snapshots every 5 minutes of editing)
+        $lastRevision = Revision::where('event_note_id', $note->id)
+            ->where('created_at', '>', now()->subMinutes(5))
+            ->first();
+
+        if (!$lastRevision) {
+            Revision::create([
+                'event_note_id' => $note->id,
+                'user_id' => Auth::id(),
+                'content_before' => $note->getOriginal('content'),
+                'content_after' => $request->content,
+            ]);
+        }
+
+        // 3. Broadcast to others
+        try {
+            broadcast(new DocumentUpdated($note->id, $request->content, Auth::id()))->toOthers();
+        } catch (\Exception $e) {
+            \Log::error("Broadcasting failed: " . $e->getMessage());
+        }
 
         return response()->json(['status' => 'success']);
     }

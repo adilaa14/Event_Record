@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Collaborator;
 use App\Models\EventNote;
 use App\Models\User;
+use App\Models\ActivityLog;
+use App\Events\ActivityLogged;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -33,6 +35,19 @@ class CollaboratorController extends Controller
             'user_id' => $user->id,
             'role' => $request->role,
         ]);
+
+        // Log Activity
+        $activity = ActivityLog::create([
+            'event_note_id' => $note->id,
+            'user_id' => Auth::id(),
+            'action' => "menambahkan {$user->name} sebagai {$request->role}",
+        ]);
+
+        try {
+            broadcast(new ActivityLogged($note->id, $activity->load('user')))->toOthers();
+        } catch (\Exception $e) {
+            \Log::error("Broadcasting failed: " . $e->getMessage());
+        }
 
         return back()->with('success', 'Collaborator added successfully.');
     }
