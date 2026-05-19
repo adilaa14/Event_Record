@@ -1,9 +1,9 @@
 version: 3
 agent:
-  authtoken: 3DuPQrSF4TWkyiAJ5L5wEbeiCoc_89znZfzD4HG4twMiAWoE5
+  authtoken: 3Dwglpae5H1e3QgOdRmHDasuBRe_2MrEYAwYKQhVhMkv2qt4t
 
 endpoints:
   - name: laravel_web
-    url: https://spousal-cauterize-track.ngrok-free.dev
+    url: https://poncho-purr-selection.ngrok-free.dev
     upstream:
       url: 80
