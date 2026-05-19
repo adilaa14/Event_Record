@@ -193,7 +193,7 @@ agent:
 
 endpoints:
   - name: laravel_web
-    url: https://spousal-cauterize-track.ngrok-free.dev
+    url: https://poncho-purr-selection.ngrok-free.dev
     upstream:
       url: 80
 ```
