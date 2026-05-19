@@ -1,0 +1,9 @@
+version: 3
+agent:
+  authtoken: 3DuPQrSF4TWkyiAJ5L5wEbeiCoc_89znZfzD4HG4twMiAWoE5
+
+endpoints:
+  - name: laravel_web
+    url: https://spousal-cauterize-track.ngrok-free.dev
+    upstream:
+      url: 80

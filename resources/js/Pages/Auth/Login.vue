@@ -75,14 +75,14 @@ const submit = () => {
                 <Link
                     v-if="canResetPassword"
                     :href="route('password.request')"
-                    class="small text-muted"
+                    class="small link-pink"
                 >
                     Lupa kata sandi?
                 </Link>
 
                 <button
                     type="submit"
-                    class="btn btn-primary"
+                    class="btn btn-pink"
                     :disabled="form.processing"
                 >
                     Masuk
@@ -91,7 +91,7 @@ const submit = () => {
 
             <div class="mt-4 text-center">
                 <span class="small text-muted">Belum punya akun? </span>
-                <Link :href="route('register')" class="small fw-bold">Daftar</Link>
+                <Link :href="route('register')" class="small fw-bold link-pink">Daftar</Link>
             </div>
         </form>
     </GuestLayout>

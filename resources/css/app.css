@@ -2,7 +2,7 @@
 
 body {
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    background-color: #f8f9fa;
+    background-color: #fff5f8;
 }
 
 .transition-hover {
@@ -12,4 +12,80 @@ body {
 .transition-hover:hover {
     transform: translateY(-2px);
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Custom Soft Blossom Pink Theme */
+.blossom-bg {
+    background-color: #fff5f8 !important;
+}
+
+.text-pink {
+    color: #f06292 !important;
+}
+
+.text-pink-dark {
+    color: #ad1457 !important;
+}
+
+.bg-pink {
+    background-color: #f06292 !important;
+}
+
+.border-pink {
+    border-color: #f06292 !important;
+}
+
+.btn-pink {
+    background-color: #f06292;
+    border-color: #f06292;
+    color: white;
+    font-weight: 600;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-pink:hover, .btn-pink:focus, .btn-pink:active {
+    background-color: #ec407a !important;
+    border-color: #ec407a !important;
+    color: white !important;
+}
+
+.btn-outline-pink {
+    color: #f06292;
+    border-color: #f06292;
+    font-weight: 600;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-outline-pink:hover, .btn-outline-pink:focus, .btn-outline-pink:active {
+    background-color: #f06292 !important;
+    border-color: #f06292 !important;
+    color: white !important;
+}
+
+/* Premium Form Focus */
+.form-control:focus, .form-select:focus {
+    border-color: #f06292 !important;
+    box-shadow: 0 0 0 0.25rem rgba(240, 98, 146, 0.25) !important;
+}
+
+.form-check-input:checked {
+    background-color: #f06292 !important;
+    border-color: #f06292 !important;
+}
+
+.form-check-input:focus {
+    border-color: #f06292 !important;
+    box-shadow: 0 0 0 0.25rem rgba(240, 98, 146, 0.25) !important;
+}
+
+/* Custom links */
+.link-pink {
+    color: #f06292;
+    text-decoration: none;
+    transition: color 0.2s ease-in-out;
+}
+
+.link-pink:hover {
+    color: #ad1457;
+    text-decoration: underline;
 }

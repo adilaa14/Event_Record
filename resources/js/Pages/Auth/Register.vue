@@ -89,14 +89,14 @@ const submit = () => {
             <div class="d-flex align-items-center justify-content-between mt-4">
                 <Link
                     :href="route('login')"
-                    class="small text-muted text-decoration-none"
+                    class="small link-pink text-decoration-none"
                 >
                     Sudah punya akun?
                 </Link>
 
                 <button
                     type="submit"
-                    class="btn btn-primary"
+                    class="btn btn-pink"
                     :disabled="form.processing"
                 >
                     Daftar
