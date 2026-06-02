@@ -286,4 +286,4 @@ terminal 1 : php artisan serve --host=0.0.0.0 --port=8000
 
 terminal 2 : php artisan reverb:start --host=0.0.0.0 --port=8080
 
-link web : http://192.168.1.77:8000/
+cara bikin ip baru: ipconfig
